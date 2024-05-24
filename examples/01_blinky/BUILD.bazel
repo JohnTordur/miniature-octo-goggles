@@ -13,13 +13,14 @@
 # the License.
 
 load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
-load("//targets:transition.bzl", "rp2040_binary", "stm32_binary")
+load("//targets:transition.bzl", "rp2040_binary", "stm32_binary","nucleol476_binary")
 
 package(default_visibility = ["//visibility:public"])
 
 cc_binary(
     name = "blinky",
     srcs = ["main.cc"],
+    malloc = "@pigweed//pw_malloc",
     deps = [
         "//libraries/pw_board_led",
         "@pigweed//pw_chrono:system_clock",
@@ -27,6 +28,11 @@ cc_binary(
         "@pigweed//pw_log",
         "@pigweed//pw_system",
     ],
+)
+
+nucleol476_binary(
+    name = "nucleol476_blinky.elf",
+    binary = ":blinky",
 )
 
 stm32_binary(

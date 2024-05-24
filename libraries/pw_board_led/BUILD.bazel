@@ -33,6 +33,7 @@ alias(
         "//libraries/pw_board_led_host:backend_constraint_value": "//libraries/pw_board_led_host",
         "//libraries/pw_board_led_rp2040:backend_constraint_value": "//libraries/pw_board_led_rp2040",
         "//libraries/pw_board_led_stm32f429i_disc1:backend_constraint_value": "//libraries/pw_board_led_stm32f429i_disc1",
+        "//libraries/pw_board_led_nucleo_l476rg:backend_constraint_value": "//libraries/pw_board_led_nucleo_l476rg",
         "//conditions:default": ":unspecified_backend",
     }),
 )

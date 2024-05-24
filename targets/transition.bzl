@@ -66,6 +66,55 @@ stm32_binary = rule(
     doc = "Builds the specified binary for the stm32f429i_disc1_stm32cube platform.",
 )
 
+def _nucleol476_transition_impl(settings, attr):
+    # buildifier: disable=unused-variable
+    _ignore = settings, attr
+
+    return {
+        "//command_line_option:copt": ["-DSTM32CUBE_HEADER=\"stm32l4xx.h\"", "-DSTM32L476xx"],
+        "//command_line_option:platforms": "//targets/nucleo_l476rg:platform",
+        "@hal_driver//:hal_config": "//targets/nucleo_l476rg:hal_config",
+        "@pigweed//pw_log:backend": "@pigweed//pw_log_tokenized",
+        "@pigweed//pw_log:backend_impl": "@pigweed//pw_log_tokenized:impl",
+        "@pigweed//pw_log_tokenized:handler_backend": "@pigweed//pw_system:log_backend",
+        "@pigweed//pw_system:extra_platform_libs": "//targets/nucleo_l476rg:extra_platform_libs",
+    }
+
+_nucleol476_transition = transition(
+    implementation = _nucleol476_transition_impl,
+    inputs = [],
+    outputs = [
+        "//command_line_option:copt",
+        "//command_line_option:platforms",
+        "@hal_driver//:hal_config",
+        "@pigweed//pw_log:backend",
+        "@pigweed//pw_log:backend_impl",
+        "@pigweed//pw_log_tokenized:handler_backend",
+        "@pigweed//pw_system:extra_platform_libs",
+    ],
+)
+    
+
+def _nucleol476_binary_impl(ctx):
+    out = ctx.actions.declare_file(ctx.label.name)
+    ctx.actions.symlink(output = out, target_file = ctx.executable.binary)
+    return [DefaultInfo(files = depset([out]), executable = out)]
+
+nucleol476_binary = rule(
+    _nucleol476_binary_impl,
+    attrs = {
+        "binary": attr.label(
+            doc = "cc_binary to build for nucleo_l476rg_stm32cube.",
+            cfg = _nucleol476_transition,
+            executable = True,
+            mandatory = True,
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
+        ),
+    },
+)
+
 def _rp2040_transition_impl(settings, attr):
     # buildifier: disable=unused-variable
     _ignore = settings, attr
